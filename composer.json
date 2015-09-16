@@ -1,5 +1,10 @@
 {
-	"name": "gracenote/pie",
+	"name": "pie/pie",
+	"type": "library",
+	"license": "MIT",
+	"author": [
+		{ "name": "Nobuyori Takahashi", "email": "voltrue2@yahoo.com" }	
+	],
 	"description": "A light weight router, memcache + SQL handling, and session management library.",
 	"require": {
 		"php": ">= 5.3.0"
