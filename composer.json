@@ -1,5 +1,5 @@
 {
-	"name": "pie",
+	"name": "gracenote/pie",
 	"description": "A light weight router, memcache + SQL handling, and session management library.",
 	"require": {
 		"php": ">= 5.3.0"
