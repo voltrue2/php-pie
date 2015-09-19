@@ -192,7 +192,7 @@ class Router {
 		}
 	}
 
-	private function handleError($req, $res, $code, $params = array(), $error) {
+	private function handleError($req, $res, $code, $params = array(), $error = null) {
 		if (isset($this->errorRerouteMap[$code])) {
 			$handle = $this->errorRerouteMap[$code];
 			$cntHub = new ControllerHub($this->controllerPath, $handle['controller'], $handle['method'], $params, $req, $res);
