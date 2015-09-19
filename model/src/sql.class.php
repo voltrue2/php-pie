@@ -12,7 +12,8 @@ class Sql {
 		// connect to db
 		$connect = $type . ':';
 		$connect .= 'host=' . $host . ';';
-		$connect .= 'dbname=' . $dbname;
+		$connect .= 'dbname=' . $dbname . ';';
+		$connect .= 'charset=utf8';
 		// use connection pooling
 		$options = array(
 			PDO::ATTR_PERSISTENT =>  true
