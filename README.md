@@ -26,7 +26,7 @@ Config::set('console.noClient', false);
 Config::set('controllerPath', '/path/to/my/application/controller/');
 
 // set up logger
-Console::init(Config::get('console.filePath'), Config::get('console.noClient'));
+Console::setup(Config::get('console.filePath'), Config::get('console.noClient'));
 
 // set up and run router
 $router = new Router();

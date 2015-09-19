@@ -192,7 +192,7 @@ class Router {
 		}
 	}
 
-	private function handleError($req, $res, $code, $params = array()) {
+	private function handleError($req, $res, $code, $params = array(), $error) {
 		if (isset($this->errorRerouteMap[$code])) {
 			$handle = $this->errorRerouteMap[$code];
 			$cntHub = new ControllerHub($this->controllerPath, $handle['controller'], $handle['method'], $params, $req, $res);
@@ -201,13 +201,16 @@ class Router {
 		// no error handle defined
 		header('HTTP/1.1 ' . self::$STATUS[$code]);
 		echo 'Error: ' . $code . '<br />';
+		if ($error) {
+			echo var_dump($error);
+		}
 		exit();
 	}
 
 	// this is used privately, but because it's called from register_shutdown_function, it must be public
 	public function respondException($error) {
 		$this->console->error('Exception Response:', $error);			
-		$this->handleError(new Request($_SERVER['REQUEST_METHOD']), new Response(), 500);
+		$this->handleError(new Request($_SERVER['REQUEST_METHOD']), new Response(), 500, null, $error);
 	}
 
 }
