@@ -9,7 +9,7 @@ class Data {
 	}
 
 	public static function get($name) {
-		return isset(self::$data[$name]) ? self::$data[$name] : '{"' .$name . '":<NoValue>}';
+		return isset(self::$data[$name]) ? self::$data[$name] : null;
 	}
 
 	public static function getAll() {
