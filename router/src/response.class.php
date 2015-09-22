@@ -20,7 +20,6 @@ class Response {
 	// must be an absolute path
 	public function html($sourcePath, $code = 200) {
 		if (file_exists(Loader::getRootPath() . $sourcePath)) {
-			echo implode('', Console::output('html'));
 			ob_start();
 			include(Loader::getRootPath() . $sourcePath);
 			$data = ob_get_contents();
@@ -28,12 +27,14 @@ class Response {
 			header('Content-Type: text/html; charset=UTF-8');
 			header('Content-Length: ' . strlen($data));
 			header('HTTP/1.1 ' . Router::status($code));
+			echo implode('', Console::output('html'));
 			echo $data;
 			exit();
 		}
 		header('Content-Type: text/html; charset=UTF-8');
 		header('Content-Length: ' . strlen($sourcePath));
 		header('HTTP/1.1 ' . Router::status($code));
+		echo implode('', Console::output('html'));
 		echo $sourcePath;
 		exit();
 	}

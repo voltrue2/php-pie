@@ -20,6 +20,9 @@ class Request {
 				parse_str(file_get_contents('php://input'), $this->source);
 				break;
 		}
+		// sanitize input
+		$this->source = $this->sanitize($this->source);
+		// parse headers
 		$this->headers = getallheaders();
 		$this->uri = $_SERVER['REQUEST_URI'];
 		$index = strpos($this->uri, '?');
@@ -61,5 +64,15 @@ class Request {
 
 	public function getUri() {
 		return $this->uri;
+	}
+
+	private function sanitize($data) {
+		if (is_array($data)) {
+			foreach ($data as $i => $val) {
+				$data[$i] = $this->sanitize($val);
+			}
+			return $data;
+		}
+		return htmlspecialchars($data);
 	}
 }

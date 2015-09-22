@@ -81,7 +81,7 @@ class ControllerHub {
 				'code' => 500,
 				'detail' => $exception
 			);
-			$this->console->error($this->controller . '/' . $this->reqMethod, $this->error['code'], $this->error['detail']->getMessage());
+			$this->console->error($this->name . '/' . $this->method, $this->error['code'], $this->error['detail']->getMessage());
 		}
 	}
 
