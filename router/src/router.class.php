@@ -71,6 +71,20 @@ class Router {
 	}
 	
 	public static function redirect($uri, $statusCode = 301) {
+		// encode url parameters
+		$sep = explode('?', $uri);
+		if (isset($sep[1])) {
+			// there are some GET params
+			$uri = $sep[0] . '?';
+			$list = explode('&', $sep[1]);
+			$encodedList = array();
+			for ($i = 0, $len = count($list); $i < $len; $i++) {
+				$s = explode('=', $list[$i]);
+				$encodedList[] = $s[0] . '=' . urlencode($s[1]);
+			}
+			$uri .= implode('&', $encodedList);
+		}	
+		// status code
 		$status = isset(self::$STATUS[$statusCode]) ? self::$STATUS[$statusCode] : self::$STATUS[301];
 		header('HTTP/1.1 ' . $status);
 		header('Location: ' . $uri);
