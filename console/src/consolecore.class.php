@@ -76,9 +76,11 @@ class ConsoleCore {
 		$this->writeToFile($type, $time, $fileLog);
 	
 		$htmlLog = $tag .= implode(',', $tagVals) . ');</script>';
-	
-		Console::prepare('html', $htmlLog);
-		Console::prepare('json', $fileLog);
+
+		if (!$this->noClient) {	
+			Console::prepare('html', $htmlLog);
+			Console::prepare('json', $fileLog);
+		}
 	}
 
 	private function writeToFile($type, $time, $msgList) {
