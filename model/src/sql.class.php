@@ -40,7 +40,7 @@ class Sql {
 
 		$res = $st->fetchAll(PDO::FETCH_ASSOC);
 
-		$this->console->log('[read]:', $sql, implode(',', $params), 'data [' . count($res) . ']');
+		$this->console->log('[read]:', $sql, '[' . implode(',', $params) . ']', '[count: ' . count($res) . ']');
 
 		return $res;
 	}
@@ -57,7 +57,7 @@ class Sql {
 			
 			$count = $st->rowCount();
 
-			$this->console->log('[write]:', $sql, implode(',', $params), 'affected rows [' . $count . ']');
+			$this->console->log('[write]:', $sql, '[' . implode(',', $params) . ']', '[affected rows: ' . $count . ']');
 			
 			// return the number of rows affected
 			return $count;

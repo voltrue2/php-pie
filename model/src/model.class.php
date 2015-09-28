@@ -13,6 +13,7 @@ class Model {
 	private $ignoreCache = false;
 
 	private $NAME = 'model:';
+	private $cacheTimeKey = '__time__:';
 
 	public function __construct($dataName) {
 		$this->dataName = $dataName;
@@ -43,19 +44,21 @@ class Model {
 	public function read($sql, $params = array()) {
 
 		$res = null;
+		$tableNames = array();
 
 		if (!$this->ignoreCache) {
 			// try to get the data from cache
-			$key = $this->dataName . ':' . implode('.', $params);
+			$tableNames = $this->getTableNames($sql);
+			$key = $this->dataName . ':' . implode('-', $tableNames) . ':' . implode('.', $params);
 			$res = $this->cache->get($key);
 		}
 
 		if ($res) {
 			// check the cached update time for this dataName
 			$allClear = true;
-			$tableNames = $this->getTableNames($sql);
-			for ($i = 0, $len = count($tableNames); $i < $len; $i++) {
-				$time = $this->cache->get($this->dataName . '.' . $tableNames[$i]);
+			$keys = $this->createCacheTimeKeys($sql);
+			for ($i = 0, $len = count($keys); $i < $len; $i++) {
+				$time = $this->cache->get($keys[$i]);
 				if (!$time || $time > $res['time']) {
 					// if one of them is stale, we ignore cache
 					$allClear = false;
@@ -108,13 +111,31 @@ class Model {
 		return $this->master->rollback();
 	}
 
-	public function updateCacheTime($sql) {
-		$tableNames = $this->getTableNames($sql);
+	private function updateCacheTime($sql) {
 		$time = time();
-		for ($i = 0, $len = count($tableNames); $i < $len; $i++) {
-			$this->cache->set($this->dataName . '.' . $tableNames[$i], $time);
+		$keys = $this->createCacheTimeKeys($sql);
+		for ($i = 0, $len = count($keys); $i < $len; $i++) {
+			$this->cache->set($keys[$i], $time);
 		}
 		return $time;
+	}
+
+	private function getCacheTimeList($sql) {
+		$res = array();
+		$keys = $this->createCacheTimeKeys($sql);
+		for ($i = 0, $len = count($keys); $i < $len; $i++) {
+			$res[] = $this->cache->get($keys[$i]);
+		}
+		return $res;
+	}
+
+	private function createCacheTimeKeys($sql) {
+		$keys = array();
+		$tableNames = $this->getTableNames($sql);
+		for ($i = 0, $len = count($tableNames); $i < $len; $i++) {
+			$keys[] = $this->cacheTimeKey . $this->dataName . '.' . $tableNames[$i];
+		}
+		return $keys;
 	}
 
 	private function getTableNames($sql) {

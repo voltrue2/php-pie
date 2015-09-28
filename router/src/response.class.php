@@ -22,19 +22,20 @@ class Response {
 		if (file_exists(Loader::getRootPath() . $sourcePath)) {
 			ob_start();
 			include(Loader::getRootPath() . $sourcePath);
+			$log = implode('', Console::output('html'));
 			$data = ob_get_contents();
+			$data = Utils::strReplace('</body>', $log . '</body>', $data);
 			ob_end_clean();
 			header('Content-Type: text/html; charset=UTF-8');
 			header('Content-Length: ' . strlen($data));
 			header('HTTP/1.1 ' . Router::status($code));
-			echo implode('', Console::output('html'));
 			echo $data;
 			exit();
 		}
 		header('Content-Type: text/html; charset=UTF-8');
 		header('Content-Length: ' . strlen($sourcePath));
 		header('HTTP/1.1 ' . Router::status($code));
-		echo implode('', Console::output('html'));
+		echo implode('', Console::output('html')) . '<br />';
 		echo $sourcePath;
 		exit();
 	}
