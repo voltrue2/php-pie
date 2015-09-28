@@ -5,8 +5,10 @@ class ConsoleCore {
 	private $filePath = null;
 	private $noClient = false;
 	private $name = null;
+	private $phpVersion;
 
 	public function __construct($filePath = null, $noClient = false, $name = null) {
+		$this->phpVersion = phpversion();
 		// optional to write to a file
 		$this->filePath = $filePath;
 		// optional to disable client logging
@@ -53,7 +55,14 @@ class ConsoleCore {
 					break;
 				case 'array':
 				case 'object':
-					$json = json_encode($item);
+					if ($this->phpVersion >= 5.4) {
+						// for PHP 5.4+
+						$json = json_encode($item);
+					} else {
+						$pattern = "/\\\\u([a-f0-9]{4})/e";
+						$option = "iconv('UCS-4LE','UTF-8',pack('V', hexdec('U$1')))";
+						$json = preg_replace($pattern, $option, json_encode($item));
+					}
 					$tagVals[] = $json;
 					$fileLog[] = $json;
 					break;
