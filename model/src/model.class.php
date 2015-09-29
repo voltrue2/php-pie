@@ -13,7 +13,7 @@ class Model {
 	private $ignoreCache = false;
 
 	private $NAME = 'model:';
-	private $cacheTimeKey = '__time__:';
+	private $cacheTimeKey = '__time__.';
 
 	public function __construct($dataName) {
 		$this->dataName = $dataName;
@@ -49,7 +49,7 @@ class Model {
 		if (!$this->ignoreCache) {
 			// try to get the data from cache
 			$tableNames = $this->getTableNames($sql);
-			$key = $this->dataName . ':' . implode('-', $tableNames) . ':' . implode('.', $params);
+			$key = $this->dataName . '.' . implode('-', $tableNames) . ':' . implode('.', $params);
 			$res = $this->cache->get($key);
 		}
 
@@ -59,16 +59,17 @@ class Model {
 			$keys = $this->createCacheTimeKeys($sql);
 			for ($i = 0, $len = count($keys); $i < $len; $i++) {
 				$time = $this->cache->get($keys[$i]);
-				if (!$time || $time > $res['time']) {
+				if ($time > $res['time']) {
 					// if one of them is stale, we ignore cache
 					$allClear = false;
+					// no need to check any further
+					$this->console->log('Cache data is now stale:', $time, '>', $res['time'], $keys[$i]);
+					break;
 				}
 			}
 			if ($allClear) {
 				// there is cached data and the data is not stale
-
-				$this->console->log('Data retrieved from cache:', $sql, implode(',', $params));
-
+				$this->console->log('Data retrieved from cache:', $res['time'], $sql, implode(',', $params));
 				return $res['data'];
 			}
 		}
@@ -77,8 +78,7 @@ class Model {
 
 		if (!$this->ignoreCache) {
 			// store cached data
-			$time = $this->updateCacheTime($sql);
-			$this->cache->set($key, array('data' => $res, 'time' => $time));
+			$this->cache->set($key, array('data' => $res, 'time' => time()));
 		}
 
 		return $res;
