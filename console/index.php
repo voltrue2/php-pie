@@ -7,19 +7,21 @@ class Console {
 	
 	private static $filePath;
 	private static $noClient;
+	private static $verbose;
 	private static $logData = array(
 		'html' => array(),
 		'json' => array()
 	);
 
-	public static function setup($filePath = null, $noClient = false) {
+	public static function setup($filePath = null, $noClient = false, $verbose = true) {
 		self::$filePath = $filePath;
 		self::$noClient = $noClient;
+		self::$verbose = $verbose;
 		self::create();
 	}
 
 	public static function create($name = null) {
-		return new ConsoleCore(self::$filePath, self::$noClient, $name); 
+		return new ConsoleCore(self::$filePath, self::$noClient, $name, self::$verbose); 
 	}
 
 	public static function prepare($type, $logData) {

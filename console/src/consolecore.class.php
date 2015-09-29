@@ -6,8 +6,9 @@ class ConsoleCore {
 	private $noClient = false;
 	private $name = null;
 	private $phpVersion;
+	private $verbose = true;
 
-	public function __construct($filePath = null, $noClient = false, $name = null) {
+	public function __construct($filePath = null, $noClient = false, $name = null, $verbose = true) {
 		$this->phpVersion = phpversion();
 		// optional to write to a file
 		$this->filePath = $filePath;
@@ -15,11 +16,16 @@ class ConsoleCore {
 		$this->noClient = $noClient;
 		// logger name
 		$this->name = $name;
+		// log level
+		$this->verbose = $verbose;
 		// set up a fatal error catcher
 		ExceptionHandler::add('logFatalError', $this);
 	}
 
 	public function log() {
+		if (!$this->verbose) {
+			return;
+		}
 		$args = func_get_args();
 		$this->createLog('log', $args);
 	}

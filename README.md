@@ -23,10 +23,11 @@ Loader::setRootPath('/path/to/my/application/');
 // set up configurations
 Config::set('console.filePath', '/path/to/my/application/logs/server.' . date('Ymd') . '.log');
 Config::set('console.noClient', false);
+Config::set('console.verbose', false);
 Config::set('controllerPath', '/path/to/my/application/controller/');
 
 // set up logger
-Console::setup(Config::get('console.filePath'), Config::get('console.noClient'));
+Console::setup(Config::get('console.filePath'), Config::get('console.noClient'), Config::get('console.verbose'));
 
 // set up and run router
 $router = new Router();
@@ -180,7 +181,7 @@ A static class for logging both on server and client (browser).
 
 #### Static Methods
 
-##### ::setup($filePath [*string], $noClient [*boolean])
+##### ::setup($filePath [*string], $noClient [*boolean], $verbose [*boolean])
 
 Set up Console class.
 
@@ -191,6 +192,14 @@ If given, Console will be logging to the path given on the server.
 ###### $noClient
 
 If `false`, Console will not be logging in console of browser.
+
+Default value is `false`.
+
+###### $verbose
+
+If `false` Console will not output `log`, but `warn` and `error` only.
+
+Default value is `true`.
 
 ##### ::create($name [*string])
 
