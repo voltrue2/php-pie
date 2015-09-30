@@ -30,6 +30,12 @@ class Sql {
 	}
 
 	public function read($sql, $params = array()) {
+
+		if (strpos(strtolower($sql), 'select') !== 0) {
+			throw new Exception('Invalid SQL query for [read]: query must be a SELECT statement: ' . $sql);
+			return array();
+		}
+
 		$st = $this->cn->prepare($sql);
 		$st->execute($params);
 
