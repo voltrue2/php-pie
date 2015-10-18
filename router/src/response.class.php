@@ -5,9 +5,11 @@ require_once('data.class.php');
 class Response {
 	
 	private $console;
+	private $phpVersion;
 
 	public function __construct() {
 		$this->console = Console::create('router/response');
+		$this->phpVersion = phpversion();
 	}
 
 	public function assign($name, $value) {
@@ -42,7 +44,14 @@ class Response {
 
 	public function json($code = 200) {
 		Data::set('logger', Console::output('json'));
-		$string = json_encode(Data::getAll());
+		if ($this->phpVersion >= 5.4) {
+			// for PHP 5.4+
+			$string = json_encode(Data::getAll());
+		} else {
+			$pattern = "/\\\\u([a-f0-9]{4})/e";
+			$option = "iconv('UCS-4LE','UTF-8',pack('V', hexdec('U$1')))";
+			$string = preg_replace($pattern, $option, json_encode(Data::getAll()));
+		}
 		header('Cache-Control: no-cache, must-revalidate');
 		header('Content-Type: application/json');
 		header('Content-Encoding: gzip');
