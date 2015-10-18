@@ -34,6 +34,9 @@ $router = new Router();
 $router->setTrailingSlash(true);
 $router->setControllerPath(Config::get('controllerPath'));
 
+// set URI prefix: The URI parser will assume that every URI starts with the given prefix
+$router->setUriPrefix('mobile');
+
 // add reroute
 $router->addReroute('/', '/test/index');
 

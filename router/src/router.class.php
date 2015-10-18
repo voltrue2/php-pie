@@ -6,7 +6,8 @@ require_once('hook.class.php');
 require_once('controllerhub.class.php');
 
 class Router {
-	
+
+	private $uriPrefix = '';	
 	private $trailingSlash = false;
 	private $controllerPath = null;
 	/*
@@ -91,6 +92,10 @@ class Router {
 		exit();
 	}
 
+	public function setUriPrefix($prefix) {
+		$this->uriPrefix = trim($prefix, '/');
+	}
+
 	public function setTrailingSlash($enable) {
 		$this->trailingSlash = $enable;
 	}
@@ -164,6 +169,11 @@ class Router {
 	}
 
 	private function parseUri($uri) {
+		// remove URI prefix if set
+                if ($uri !== '/') {
+                        $uri = str_replace($this->uriPrefix, '', $uri);
+                }
+                // parse controller and method
 		$sep = explode('/', substr(trim($uri, '/'), 0));
 		if ($sep[0] !== '') {
 			$controllerName = $sep[0];
@@ -176,6 +186,14 @@ class Router {
 		$params = array_splice($sep, 2);
 		// check for reroute
 		if (isset($this->rerouteMap[$controllerName . '/' . $methodName])) {
+			// remove the same name as methodName from params
+			$tmp = array();
+			for ($i = 0, $len = count($params); $i < $len; $i++) {
+				if ($params[$i] !== $methodName) {
+					$tmp[] = $params[$i];
+				}
+			}
+			$params = $tmp;
 			$reroutedUri = $this->rerouteMap[$controllerName . '/' . $methodName];
 			return $this->parseUri($reroutedUri . (!empty($params) ? implode('/', $params) : ''));
 		}
