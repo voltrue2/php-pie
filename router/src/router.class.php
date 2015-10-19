@@ -186,16 +186,8 @@ class Router {
 		$params = array_splice($sep, 2);
 		// check for reroute
 		if (isset($this->rerouteMap[$controllerName . '/' . $methodName])) {
-			// remove the same name as methodName from params
-			$tmp = array();
-			for ($i = 0, $len = count($params); $i < $len; $i++) {
-				if ($params[$i] !== $methodName) {
-					$tmp[] = $params[$i];
-				}
-			}
-			$params = $tmp;
 			$reroutedUri = $this->rerouteMap[$controllerName . '/' . $methodName];
-			return $this->parseUri($reroutedUri . (!empty($params) ? implode('/', $params) : ''));
+			return $this->parseUri($reroutedUri . '/' . (!empty($params) ? implode('/', $params) : ''));
 		}
 		return array(
 			'controllerName' => $controllerName,
