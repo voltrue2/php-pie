@@ -144,7 +144,7 @@ class Router {
 		$methodName = $parsed['methodName'];
 		$params = $parsed['params'];
 
-		$this->console->log('Request [' . $this->uri . '] resolved:', $parsed);
+		$this->console->log('Request ' . $_SERVER['REQUEST_METHOD'] . ' [' . $this->uri . '] resolved:', $parsed);
 
 		// create request and response objects
 		$req = new Request($_SERVER['REQUEST_METHOD']);
