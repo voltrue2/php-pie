@@ -139,7 +139,9 @@ class Model {
 	}
 
 	private function getTableNames($sql) {
-		preg_match_all('/((?:^select .+?(?:from|into))|^update|^table|join) (`?\w+`?)\s/i', $sql, $matches);
+		// this regex works only if there is at least 1 char after name(s)
+		$sql .= " ";
+		preg_match_all("/((?:^select .+?(?:from))|^update|^table|join|into) (`?\w+`?)\s/i", $sql, $matches);
 		if (!isset($matches[2])) {
 			return array();
 		}
